@@ -10,6 +10,7 @@ class Source:
     base_url: str
     search_url: str | None = None
     platform: str | None = None
+    capture: str = 'http'
 
 
 @dataclass(frozen=True)

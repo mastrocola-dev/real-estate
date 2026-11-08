@@ -1,0 +1,107 @@
+inglaterra: robots.txt disallows everything, skipped
+monaco: robots.txt disallows everything, skipped
+{
+  "santamerica": [
+    {
+      "url": "https://www.santamerica.com.br",
+      "status": 200,
+      "platforms": [],
+      "generator": null,
+      "hosts": [
+        "analytics.google.com",
+        "axvliw1bcpyx.objectstorage.sa-vinhedo-1.oci.customer-oci.com",
+        "facebook.com.br",
+        "fonts.google.com",
+        "fonts.googleapis.com",
+        "fonts.gstatic.com",
+        "googleads.g.doubleclick.net",
+        "rdstation.com.br",
+        "tagmanager.google.com",
+        "translate.google.com.br",
+        "www.google.com",
+        "www.googletagmanager.com"
+      ],
+      "prices_in_html": 14,
+      "jsonld_offers": 0,
+      "robots_blocks_all": false,
+      "sitemaps": [
+        "https://www.santamerica.com.br/xml/sitemap/sitemap.xml"
+      ]
+    },
+    {
+      "url": "https://www.santamerica.com.br/comprar/Londrina/Apartamento/Padrao/Centro/",
+      "status": 200,
+      "platforms": [],
+      "generator": null,
+      "hosts": [
+        "analytics.google.com",
+        "axvliw1bcpyx.objectstorage.sa-vinhedo-1.oci.customer-oci.com",
+        "facebook.com.br",
+        "fonts.google.com",
+        "fonts.googleapis.com",
+        "fonts.gstatic.com",
+        "googleads.g.doubleclick.net",
+        "rdstation.com.br",
+        "tagmanager.google.com",
+        "translate.google.com.br",
+        "www.google.com",
+        "www.googletagmanager.com"
+      ],
+      "prices_in_html": 34,
+      "jsonld_offers": 0,
+      "robots_blocks_all": false,
+      "sitemaps": [
+        "https://www.santamerica.com.br/xml/sitemap/sitemap.xml"
+      ]
+    }
+  ]
+}
+{
+  "perez": [
+    {
+      "url": "https://www.imobiliariaperez.com.br",
+      "status": 200,
+      "platforms": [
+        "vista",
+        "nextjs"
+      ],
+      "generator": null,
+      "hosts": [
+        "abajour.keyspot.com.br",
+        "cdn.keyspot.com.br",
+        "site-api.keyspot.com.br"
+      ],
+      "prices_in_html": 29,
+      "jsonld_offers": 0,
+      "robots_blocks_all": false,
+      "sitemaps": [
+        "https://www.imobiliariaperez.com.br/sitemap.xml",
+        "https://www.imobiliariaperez.com.br/sitemaps/pages/sitemap.xml",
+        "https://www.imobiliariaperez.com.br/sitemaps/properties/sitemap.xml",
+        "https://www.imobiliariaperez.com.br/sitemaps/sale/sitemap.xml",
+        "https://www.imobiliariaperez.com.br/sitemaps/rent/sitemap.xml",
+        "https://www.imobiliariaperez.com.br/sitemaps/condominiums/sitemap.xml",
+        "https://www.imobiliariaperez.com.br/sitemaps/blog/sitemap.xml",
+        "https://www.imobiliariaperez.com.br/sitemaps/images/sale/sitemap.xml",
+        "https://www.imobiliariaperez.com.br/sitemaps/images/rent/sitemap.xml"
+      ]
+    }
+  ]
+}
+{
+  "veneza": [
+    {
+      "url": "https://www.veneza.com.br",
+      "status": 200,
+      "platforms": [],
+      "generator": null,
+      "hosts": [],
+      "prices_in_html": 138,
+      "jsonld_offers": 0,
+      "robots_blocks_all": false,
+      "sitemaps": [
+        "https://www.veneza.com.br/sitemap.xml"
+      ]
+    }
+  ]
+}

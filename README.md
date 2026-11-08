@@ -22,6 +22,18 @@ estate migrate
 | `estate migrate` | Applies `db/*.sql` once each and syncs `sources.toml` into `source` |
 | `estate detect [source…]` | Fingerprints each site: platform, external hosts, prices in HTML, JSON-LD offers, robots.txt, sitemaps. Needs no database |
 | `estate fetch <source> <url>` | Stores the page in `raw_page` and in `samples/<source>/` |
+| `estate import [dir]` | Imports the pages listed in `dir/manifest.jsonl` (default `samples/inbox`), one observation time per source, then moves the folder to `samples/imported/<run>` |
+
+## Sources captured by Claude (`capture = 'claude'`)
+
+Inglaterra and Mônaco run on Kenlo, whose `robots.txt` blocks generic crawlers and allows `Claude-User`. They are never collected by this program. Only when the author asks, never scheduled:
+
+1. Claude checks the `Claude-User` group of each site's `robots.txt`
+2. Opens the sale and rent search pages of the scope in the Claude desktop app's browser (`?pagina=N`, 12 cards per page, 2 s apart) and runs `capture/kenlo.js` on each, in batches of 4 to 8 pages so each result is saved to a file on Claude's side
+3. Runs `capture/extract.py` on those files, which writes the pages and `manifest.jsonl`, and delivers them to `samples/inbox/`
+4. The author runs `estate import`
+
+Captured pages keep the title, the JSON-LD and the listing cards without images. Launches (`/empreendimento/`) have no price and are skipped.
 
 ## Rules
 

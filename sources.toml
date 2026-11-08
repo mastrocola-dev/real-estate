@@ -6,11 +6,15 @@ neighborhoods = ['Centro']
 name = 'Imobiliária Inglaterra'
 base_url = 'https://www.imobiliariainglaterra.com.br'
 search_url = 'https://www.imobiliariainglaterra.com.br/imoveis/a-venda/londrina/centro'
+platform = 'kenlo'
+capture = 'claude'
 
 [sources.monaco]
 name = 'Imobiliária Mônaco'
 base_url = 'https://www.imobiliariamonaco.com.br'
 search_url = 'https://www.imobiliariamonaco.com.br/imoveis/a-venda/londrina/centro'
+platform = 'kenlo'
+capture = 'claude'
 
 [sources.santamerica]
 name = 'Imobiliária Santamérica'
