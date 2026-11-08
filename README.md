@@ -22,7 +22,16 @@ estate migrate
 | `estate migrate` | Applies `db/*.sql` once each and syncs `sources.toml` into `source` |
 | `estate detect [source…]` | Fingerprints each site: platform, external hosts, prices in HTML, JSON-LD offers, robots.txt, sitemaps. Needs no database |
 | `estate fetch <source> <url>` | Stores the page in `raw_page` and in `samples/<source>/` |
+| `estate collect [source…]` | Collects every `capture = 'http'` source for the scope in `sources.toml`: raw pages, listings and one snapshot time per run; skips any URL `robots.txt` disallows |
 | `estate import [dir]` | Imports the pages listed in `dir/manifest.jsonl` (default `samples/inbox`), one observation time per source, then moves the folder to `samples/imported/<run>` |
+
+## Sources collected by this program
+
+| Source | Platform | How |
+|---|---|---|
+| Perez | Keyspot | Search `/venda|alugar/pr/londrina/<bairro>?pagina=N`, 30 cards per page, total from the JSON-LD ItemList |
+| Santamérica | Kurole | Category URLs for the neighborhood from `/xml/sitemap/sitemap.xml`, then `?pag=N`, 27 cards per page; cards often lack area |
+| Veneza | Casasoft | Two sitemap requests (`transaction=v|l`); the listing URL carries type, bedrooms, neighborhood, parking, area, purpose and price |
 
 ## Sources captured by Claude (`capture = 'claude'`)
 

@@ -5,6 +5,9 @@ from urllib.parse import urlparse
 
 from selectolax.lexbor import LexborHTMLParser as HTMLParser
 
+from real_estate import robots
+from real_estate.http import USER_AGENT
+
 SIGNATURES = {
     'kenlo': ['kenlo', 'ingaia', 'imobiliariaweb'],
     'jetimob': ['jetimob'],
@@ -29,7 +32,7 @@ class Fingerprint:
     hosts: list[str] = field(default_factory=list)
     prices_in_html: int = 0
     jsonld_offers: int = 0
-    robots_blocks_all: bool = False
+    robots_allows: bool = True
     sitemaps: list[str] = field(default_factory=list)
 
 
@@ -53,25 +56,10 @@ def jsonld_offers(tree: HTMLParser) -> int:
     return count
 
 
-def robots(text: str) -> tuple[bool, list[str]]:
-    blocks_all, applies, sitemaps = False, False, []
-    for line in text.splitlines():
-        key, _, value = line.partition(':')
-        key, value = key.strip().lower(), value.strip()
-        if key == 'user-agent':
-            applies = value == '*'
-        elif key == 'disallow' and applies and value == '/':
-            blocks_all = True
-        elif key == 'sitemap':
-            sitemaps.append(value)
-    return blocks_all, sitemaps
-
-
 def fingerprint(url: str, status: int, html: str, robots_txt: str = '') -> Fingerprint:
     tree = HTMLParser(html)
     meta = tree.css_first('meta[name="generator"]')
     own = urlparse(url).netloc.removeprefix('www.')
-    blocks_all, sitemaps = robots(robots_txt)
     return Fingerprint(
         url=url,
         status=status,
@@ -80,8 +68,8 @@ def fingerprint(url: str, status: int, html: str, robots_txt: str = '') -> Finge
         hosts=external_hosts(tree, own),
         prices_in_html=len(PRICE.findall(html)),
         jsonld_offers=jsonld_offers(tree),
-        robots_blocks_all=blocks_all,
-        sitemaps=sitemaps,
+        robots_allows=robots.allowed(robots_txt, USER_AGENT, url),
+        sitemaps=robots.sitemaps(robots_txt),
     )
 
 

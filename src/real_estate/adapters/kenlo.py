@@ -4,7 +4,7 @@ from urllib.parse import urljoin, urlparse
 
 from selectolax.lexbor import LexborHTMLParser as HTMLParser
 
-from real_estate.listing import Listing, Offer, area, count, money, purpose
+from real_estate.listing import Listing, Offer, area, count, money, purpose, slug
 
 
 def search_urls(base_url: str, city: str, neighborhood: str) -> list[str]:
@@ -13,10 +13,6 @@ def search_urls(base_url: str, city: str, neighborhood: str) -> list[str]:
         urljoin(base_url, f'/imoveis/a-venda/{path}'),
         urljoin(base_url, f'/imoveis/para-alugar/{path}'),
     ]
-
-
-def slug(text: str) -> str:
-    return re.sub(r'\s+', '-', text.strip().lower())
 
 
 def item_list(tree: HTMLParser) -> dict[str, dict]:

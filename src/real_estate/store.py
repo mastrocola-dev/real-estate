@@ -26,9 +26,9 @@ def import_listings(
             if not offer.available:
                 continue
             snapshots += conn.execute(
-                'insert into snapshot (listing_id, observed_at, purpose, type, price, area_useful, '
+                'insert into snapshot (listing_id, observed_at, purpose, type, price, area_useful, area_total, '
                 'bedrooms, suites, bathrooms, parking, address, neighborhood, raw_page_id) '
-                'values (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s) '
+                'values (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s) '
                 'on conflict do nothing',
                 [
                     listing_id,
@@ -37,6 +37,7 @@ def import_listings(
                     item.type,
                     offer.price,
                     item.area_useful,
+                    item.area_total,
                     item.bedrooms,
                     item.suites,
                     item.bathrooms,

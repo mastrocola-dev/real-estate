@@ -1,4 +1,5 @@
 import re
+import unicodedata
 from dataclasses import dataclass, field
 
 PURPOSES = {
@@ -25,6 +26,7 @@ class Listing:
     neighborhood: str | None = None
     address: str | None = None
     area_useful: float | None = None
+    area_total: float | None = None
     bedrooms: int | None = None
     suites: int | None = None
     bathrooms: int | None = None
@@ -61,3 +63,8 @@ def count(text: str, *words: str) -> int | None:
     pattern = r'(\d+)\s+(?:' + '|'.join(words) + r')\b'
     match = re.search(pattern, text, re.IGNORECASE)
     return int(match.group(1)) if match else None
+
+
+def slug(text: str) -> str:
+    plain = unicodedata.normalize('NFKD', text).encode('ascii', 'ignore').decode()
+    return re.sub(r'[^a-z0-9]+', '-', plain.lower()).strip('-')

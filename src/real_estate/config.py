@@ -16,6 +16,7 @@ class Source:
 @dataclass(frozen=True)
 class Config:
     city: str
+    state: str
     neighborhoods: list[str]
     sources: dict[str, Source]
 

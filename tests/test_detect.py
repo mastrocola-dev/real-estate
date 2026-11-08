@@ -1,4 +1,4 @@
-from real_estate.detect import fingerprint, robots
+from real_estate.detect import fingerprint
 
 HTML = """
 <html><head>
@@ -18,9 +18,3 @@ def test_fingerprint_reads_platform_hosts_and_prices():
     assert result.hosts == ['cdn.jetimob.com']
     assert result.prices_in_html == 2
     assert result.jsonld_offers == 1
-
-
-def test_robots_reads_global_block_and_sitemaps():
-    text = 'User-agent: Googlebot\nDisallow: /\n\nUser-agent: *\nDisallow: /admin\nSitemap: https://x/s.xml'
-    assert robots(text) == (False, ['https://x/s.xml'])
-    assert robots('User-agent: *\nDisallow: /')[0] is True

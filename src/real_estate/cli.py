@@ -1,13 +1,13 @@
 import argparse
 import json
 import re
-from datetime import datetime
+from datetime import UTC, datetime
 from pathlib import Path
-from urllib.parse import urljoin, urlparse
+from urllib.parse import urlparse
 
-from real_estate import config, db, detect, store
-from real_estate.adapters import PARSERS
-from real_estate.http import Client
+from real_estate import config, db, detect, robots, store
+from real_estate.adapters import COLLECTORS, PARSERS
+from real_estate.http import USER_AGENT, Client, Disallowed
 
 SAMPLES = Path('samples')
 
@@ -21,17 +21,14 @@ def run_migrate(_args):
 def run_detect(args):
     cfg = config.load()
     client = Client()
-    ids = args.sources or list(cfg.sources)
-    for source_id in ids:
+    for source_id in args.sources or list(cfg.sources):
         source = cfg.sources[source_id]
-        robots = client.get(urljoin(source.base_url, '/robots.txt'))
-        robots_txt = robots.text if robots.status_code == 200 else ''
-        if detect.robots(robots_txt)[0]:
-            print(f'{source_id}: robots.txt disallows everything, skipped')
+        robots_txt = client.robots(source.base_url)
+        if not robots.allowed(robots_txt, USER_AGENT, source.base_url):
+            print(f'{source_id}: robots.txt disallows this program, skipped')
             continue
-        urls = [u for u in (source.base_url, source.search_url) if u]
         prints = []
-        for url in urls:
+        for url in (u for u in (source.base_url, source.search_url) if u):
             response = client.get(url)
             prints.append(detect.fingerprint(str(response.url), response.status_code, response.text, robots_txt))
         print(detect.report(source_id, prints))
@@ -75,6 +72,28 @@ def run_import(args):
     print(f'moved to {target}')
 
 
+def run_collect(args):
+    cfg = config.load()
+    client = Client()
+    observed_at = datetime.now(UTC)
+    ids = args.sources or [s.id for s in cfg.sources.values() if s.capture == 'http' and s.platform in COLLECTORS]
+    with db.connect() as conn:
+        for source_id in ids:
+            source = cfg.sources[source_id]
+            if source.capture != 'http' or source.platform not in COLLECTORS:
+                print(f'{source_id}: not collected by this program')
+                continue
+            for neighborhood in cfg.neighborhoods:
+                pages = COLLECTORS[source.platform](client, source.base_url, cfg.city, cfg.state, neighborhood)
+                try:
+                    for url, status, body, listings in pages:
+                        page_id = db.save_page(conn, source.id, url, status, body)
+                        snapshots = store.import_listings(conn, source.id, page_id, observed_at, listings)
+                        print(f'{source.id} {status} {url} cards={len(listings)} snapshots={snapshots}')
+                except Disallowed as blocked:
+                    print(f'{source.id}: robots.txt disallows {blocked}')
+
+
 def main():
     parser = argparse.ArgumentParser(prog='estate')
     commands = parser.add_subparsers(required=True)
@@ -86,6 +105,9 @@ def main():
     fetch_cmd.add_argument('source')
     fetch_cmd.add_argument('url')
     fetch_cmd.set_defaults(run=run_fetch)
+    collect_cmd = commands.add_parser('collect')
+    collect_cmd.add_argument('sources', nargs='*')
+    collect_cmd.set_defaults(run=run_collect)
     import_cmd = commands.add_parser('import')
     import_cmd.add_argument('dir', nargs='?', default='samples/inbox')
     import_cmd.set_defaults(run=run_import)
