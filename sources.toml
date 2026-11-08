@@ -1,0 +1,26 @@
+[scope]
+city = 'Londrina'
+neighborhoods = ['Centro']
+
+[sources.inglaterra]
+name = 'Imobiliária Inglaterra'
+base_url = 'https://www.imobiliariainglaterra.com.br'
+search_url = 'https://www.imobiliariainglaterra.com.br/imoveis/a-venda/londrina/centro'
+
+[sources.monaco]
+name = 'Imobiliária Mônaco'
+base_url = 'https://www.imobiliariamonaco.com.br'
+search_url = 'https://www.imobiliariamonaco.com.br/imoveis/a-venda/londrina/centro'
+
+[sources.santamerica]
+name = 'Imobiliária Santamérica'
+base_url = 'https://www.santamerica.com.br'
+search_url = 'https://www.santamerica.com.br/comprar/Londrina/Apartamento/Padrao/Centro/'
+
+[sources.perez]
+name = 'Imobiliária Perez'
+base_url = 'https://www.imobiliariaperez.com.br'
+
+[sources.veneza]
+name = 'Veneza Imóveis'
+base_url = 'https://www.veneza.com.br'
