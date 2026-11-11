@@ -111,3 +111,54 @@ def test_paginate_stops_at_total():
     pages = list(paginate(Fake(), f'{PEREZ}/venda', lambda u, n: f'{u}?pagina={n}', keyspot.parse_search))
     assert requested == [f'{PEREZ}/venda', f'{PEREZ}/venda?pagina=2']
     assert sum(len(p[3]) for p in pages) == 4
+
+
+def test_kurole_categories_city_wide():
+    xml = ''.join(
+        f'<loc>{SANTAMERICA}{path}</loc>'
+        for path in (
+            '/comprar/Londrina/Apartamento',
+            '/alugar/Londrina/Comercial',
+            '/comprar/Londrina/Apartamento/Padrao/Centro',
+            '/comprar/Cambe/Casa',
+        )
+    )
+    assert kurole.categories(xml, 'Londrina', None) == [
+        f'{SANTAMERICA}/comprar/Londrina/Apartamento',
+        f'{SANTAMERICA}/alugar/Londrina/Comercial',
+    ]
+
+
+def test_casasoft_city_wide_reads_neighborhood():
+    xml = ''.join(
+        f'<url><loc>{VENEZA}/imovel/{slug}</loc></url>'
+        for slug in (
+            'casa-residencial-3-quartos-gleba-fazenda-palhano-londrina-2-vagas-240m2-venda-rs-950000/5770/01.001',
+            'salao-loja-jardim-higienopolis-londrina-80m2-locacao-rs-3500/5770/02.001',
+            'apartamento-2-quartos-chacara-manella-cambe-1-vaga-50m2-venda-rs-200000/5770/03.001',
+        )
+    )
+    house, store = casasoft.parse_sitemap(xml, 'Londrina', None)
+    assert (house.type, house.neighborhood, house.bedrooms, house.parking) == (
+        'casa residencial',
+        'Gleba Fazenda Palhano',
+        3,
+        2,
+    )
+    assert (store.type, store.neighborhood, store.offers) == (
+        'salao loja',
+        'Jardim Higienopolis',
+        [Offer('rent', 3500)],
+    )
+
+
+def test_keyspot_city_url():
+    requested = []
+
+    class Fake:
+        def get(self, url):
+            requested.append(url)
+            return SimpleNamespace(text='', url=url, status_code=404)
+
+    list(keyspot.collect(Fake(), PEREZ, 'Londrina', 'PR', None))
+    assert requested == [f'{PEREZ}/venda/pr/londrina', f'{PEREZ}/alugar/pr/londrina']

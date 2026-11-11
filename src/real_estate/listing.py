@@ -31,6 +31,9 @@ class Listing:
     suites: int | None = None
     bathrooms: int | None = None
     parking: int | None = None
+    condo_fee: float | None = None
+    iptu: float | None = None
+    point: tuple[float, float] | None = None
     offers: list[Offer] = field(default_factory=list)
 
     @property

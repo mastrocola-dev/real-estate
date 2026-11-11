@@ -1,0 +1,74 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Imóveis · Londrina</title>
+  <link rel="stylesheet" href="https://unpkg.com/maplibre-gl@4.7.1/dist/maplibre-gl.css">
+  <link rel="stylesheet" href="/static/style.css">
+</head>
+<body>
+  <header>
+    <strong>Imóveis · Londrina</strong>
+    <div class="segmented" id="purpose">
+      <button data-value="sale">Venda</button>
+      <button data-value="rent">Aluguel</button>
+    </div>
+    <span id="count"></span>
+    <div class="spacer"></div>
+    <label>Cor
+      <select id="color">
+        <option value="price_m2">R$/m²</option>
+        <option value="price">Preço</option>
+        <option value="gap_pct">Desvio do modelo</option>
+      </select>
+    </label>
+    <label class="check"><input type="checkbox" id="heat"> Mapa de calor</label>
+    <button id="draw">Desenhar área</button>
+    <button id="reset">Limpar filtros</button>
+  </header>
+  <main>
+    <aside id="filters">
+      <input id="q" type="search" placeholder="Rua, código ou tipo">
+      <fieldset><legend>Tipo</legend><div class="chips" id="category"></div></fieldset>
+      <fieldset><legend>Bairro</legend><input id="hood" list="hoods" placeholder="Adicionar bairro"><datalist id="hoods"></datalist><div class="chips" id="neighborhood"></div></fieldset>
+      <fieldset><legend>Imobiliária</legend><div class="chips" id="source"></div></fieldset>
+      <fieldset><legend>Preço (R$)</legend><div class="range" data-key="price"></div></fieldset>
+      <fieldset><legend>Área (m²)</legend><div class="range" data-key="area"></div></fieldset>
+      <fieldset><legend>R$/m²</legend><div class="range" data-key="m2"></div></fieldset>
+      <fieldset><legend>Desvio do modelo (%)</legend><div class="range" data-key="gap"></div>
+        <div class="quick">
+          <button data-gap="-100,-15">Abaixo do modelo</button>
+          <button data-gap="15,1000">Acima do modelo</button>
+        </div>
+      </fieldset>
+      <fieldset><legend>Quartos</legend><div class="segmented min" data-key="bedrooms"></div></fieldset>
+      <fieldset><legend>Suítes</legend><div class="segmented min" data-key="suites"></div></fieldset>
+      <fieldset><legend>Vagas</legend><div class="segmented min" data-key="parking"></div></fieldset>
+      <fieldset><legend>Localização</legend><div class="chips" id="precision"></div></fieldset>
+      <label class="check"><input type="checkbox" id="favorites"> Só favoritos</label>
+      <label class="check"><input type="checkbox" id="clean"> Ocultar outliers e duplicados</label>
+    </aside>
+    <section id="map"><div id="legend"></div><div id="hint" hidden>Clique para marcar vértices · duplo clique para fechar · Esc cancela</div></section>
+    <aside id="side">
+      <div id="list-view">
+        <div class="toolbar">
+          <select id="sort">
+            <option value="price_m2">Menor R$/m²</option>
+            <option value="-price_m2">Maior R$/m²</option>
+            <option value="price">Menor preço</option>
+            <option value="-price">Maior preço</option>
+            <option value="-area">Maior área</option>
+            <option value="gap_pct">Mais abaixo do modelo</option>
+          </select>
+        </div>
+        <ol id="list"></ol>
+        <button id="more" hidden>Mostrar mais</button>
+      </div>
+      <div id="detail" hidden></div>
+    </aside>
+  </main>
+  <script src="https://unpkg.com/maplibre-gl@4.7.1/dist/maplibre-gl.js"></script>
+  <script type="module" src="/static/app.js"></script>
+</body>
+</html>

@@ -5,8 +5,8 @@ from datetime import UTC, datetime
 from pathlib import Path
 from urllib.parse import urlparse
 
-from real_estate import config, db, detect, robots, store
-from real_estate.adapters import COLLECTORS, PARSERS
+from real_estate import config, db, detect, locate, robots, store
+from real_estate.adapters import COLLECTORS, parser
 from real_estate.http import USER_AGENT, Client, Disallowed
 
 SAMPLES = Path('samples')
@@ -61,7 +61,7 @@ def run_import(args):
         for e in entries:
             source = cfg.sources[e['source']]
             html = (inbox / e['file']).read_text()
-            total, listings = PARSERS[source.platform](html, e['url'])
+            total, listings = parser(source.platform, cfg.city, cfg.spellings)(html, e['url'])
             page_id = db.save_page(conn, source.id, e['url'], 200, html)
             observed_at = datetime.fromisoformat(runs[source.id])
             snapshots = store.import_listings(conn, source.id, page_id, observed_at, listings)
@@ -78,12 +78,14 @@ def run_collect(args):
     observed_at = datetime.now(UTC)
     ids = args.sources or [s.id for s in cfg.sources.values() if s.capture == 'http' and s.platform in COLLECTORS]
     with db.connect() as conn:
+        db.sync_sources(conn, cfg)
+        conn.commit()
         for source_id in ids:
             source = cfg.sources[source_id]
             if source.capture != 'http' or source.platform not in COLLECTORS:
                 print(f'{source_id}: not collected by this program')
                 continue
-            for neighborhood in cfg.neighborhoods:
+            for neighborhood in cfg.spellings or [None]:
                 pages = COLLECTORS[source.platform](client, source.base_url, cfg.city, cfg.state, neighborhood)
                 try:
                     for url, status, body, listings in pages:
@@ -92,6 +94,44 @@ def run_collect(args):
                         print(f'{source.id} {status} {url} cards={len(listings)} snapshots={snapshots}')
                 except Disallowed as blocked:
                     print(f'{source.id}: robots.txt disallows {blocked}')
+
+
+def run_locate(args):
+    cfg = config.load()
+    with db.connect() as conn:
+        print(locate.locate(conn, Path(args.file), cfg.canonical))
+
+
+def run_geocode(args):
+    cfg = config.load()
+    with db.connect() as conn:
+        print(locate.geocode(conn, Client(interval=1.1), Path(args.file), cfg.city, cfg.state, cfg.canonical))
+        print(locate.locate(conn, Path(args.file), cfg.canonical))
+
+
+def run_enrich(args):
+    from real_estate import enrich
+
+    cfg = config.load()
+    ids = args.sources or [s.id for s in cfg.sources.values() if s.capture == 'http']
+    with db.connect() as conn:
+        print(enrich.enrich(conn, Client(), ids, args.limit, args.redo))
+
+
+def run_analyze(args):
+    from real_estate import analysis
+
+    with db.connect() as conn:
+        report = analysis.analyze(conn, Path(args.out))
+    print(json.dumps({k: report[k] for k in ('listings', 'outliers', 'duplicates')}))
+    for item in report['models']:
+        print(item['purpose'], item['rows'], 'ols', item['ols_cv'], 'gb', item['gb_cv'])
+
+
+def run_serve(args):
+    import uvicorn
+
+    uvicorn.run('real_estate.web.app:app', host='127.0.0.1', port=args.port)
 
 
 def main():
@@ -108,9 +148,26 @@ def main():
     collect_cmd = commands.add_parser('collect')
     collect_cmd.add_argument('sources', nargs='*')
     collect_cmd.set_defaults(run=run_collect)
+    analyze_cmd = commands.add_parser('analyze')
+    analyze_cmd.add_argument('out', nargs='?', default='analysis')
+    analyze_cmd.set_defaults(run=run_analyze)
+    locate_cmd = commands.add_parser('locate')
+    locate_cmd.add_argument('file')
+    locate_cmd.set_defaults(run=run_locate)
     import_cmd = commands.add_parser('import')
     import_cmd.add_argument('dir', nargs='?', default='samples/inbox')
     import_cmd.set_defaults(run=run_import)
+    geocode_cmd = commands.add_parser('geocode')
+    geocode_cmd.add_argument('file', nargs='?', default='samples/coordinates.json')
+    geocode_cmd.set_defaults(run=run_geocode)
+    enrich_cmd = commands.add_parser('enrich')
+    enrich_cmd.add_argument('sources', nargs='*')
+    enrich_cmd.add_argument('--limit', type=int, default=300)
+    enrich_cmd.add_argument('--redo', action='store_true')
+    enrich_cmd.set_defaults(run=run_enrich)
+    serve_cmd = commands.add_parser('serve')
+    serve_cmd.add_argument('--port', type=int, default=8000)
+    serve_cmd.set_defaults(run=run_serve)
     args = parser.parse_args()
     args.run(args)
 

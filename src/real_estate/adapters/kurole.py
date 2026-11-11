@@ -63,13 +63,13 @@ def parse_search(html: str, url: str) -> tuple[int | None, list[Listing]]:
     return (int(found.group(1)) if found else None), listings
 
 
-def categories(xml: str, city: str, neighborhood: str) -> list[str]:
-    hood = re.escape(neighborhood.replace(' ', '-'))
-    pattern = rf'<loc>\s*([^<\s]+/(?:comprar|alugar)/{re.escape(city)}/[^/<]+/[^/<]+/{hood})\s*</loc>'
+def categories(xml: str, city: str, neighborhood: str | None) -> list[str]:
+    place = rf'/[^/<]+/{re.escape(neighborhood.replace(" ", "-"))}' if neighborhood else ''
+    pattern = rf'<loc>\s*([^<\s]+/(?:comprar|alugar)/{re.escape(city)}/[^/<\s]+{place})\s*</loc>'
     return list(dict.fromkeys(re.findall(pattern, xml)))
 
 
-def collect(client: Client, base_url: str, city: str, state: str, neighborhood: str) -> Iterator[Page]:
+def collect(client: Client, base_url: str, city: str, state: str, neighborhood: str | None) -> Iterator[Page]:
     sitemap = client.get(urljoin(base_url, '/xml/sitemap/sitemap.xml'))
     yield str(sitemap.url), sitemap.status_code, sitemap.text, []
     for url in categories(sitemap.text, city, neighborhood):

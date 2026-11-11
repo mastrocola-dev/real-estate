@@ -1,19 +1,28 @@
 [scope]
 city = 'Londrina'
 state = 'PR'
-neighborhoods = ['Centro']
+neighborhoods = []
+
+[aliases]
+Alvorada = ['Jardim Alvorada']
+Champagnat = ['Jardim Champagnat']
+Coroados = ['Gleba Coroados', 'Jardim Coroados']
+'Araxá' = ['Jardim Araxá']
+'San Remo' = ['Jardim San Remo']
+Amaro = ['Jardim Amaro']
+'Gleba Palhano' = ['Gleba Fazenda Palhano']
 
 [sources.inglaterra]
 name = 'Imobiliária Inglaterra'
 base_url = 'https://www.imobiliariainglaterra.com.br'
-search_url = 'https://www.imobiliariainglaterra.com.br/imoveis/a-venda/londrina/centro'
+search_url = 'https://www.imobiliariainglaterra.com.br/imoveis/a-venda/londrina'
 platform = 'kenlo'
 capture = 'claude'
 
 [sources.monaco]
 name = 'Imobiliária Mônaco'
 base_url = 'https://www.imobiliariamonaco.com.br'
-search_url = 'https://www.imobiliariamonaco.com.br/imoveis/a-venda/londrina/centro'
+search_url = 'https://www.imobiliariamonaco.com.br/imoveis/a-venda/londrina'
 platform = 'kenlo'
 capture = 'claude'
 
@@ -32,3 +41,9 @@ platform = 'keyspot'
 name = 'Veneza Imóveis'
 base_url = 'https://www.veneza.com.br'
 platform = 'casasoft'
+
+[sources.crv]
+name = 'CRV Imobiliária'
+base_url = 'https://www.crvimobiliaria.com.br'
+search_url = 'https://www.crvimobiliaria.com.br/imoveis/a-venda/londrina-pr'
+platform = 'arbo'

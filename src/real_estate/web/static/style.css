@@ -1,0 +1,83 @@
+:root {
+  --bg: #f7f7f5;
+  --panel: #fff;
+  --line: #e3e3df;
+  --text: #1d1d1b;
+  --muted: #6b6b66;
+  --accent: #2459c9;
+  --good: #1a7f4b;
+  --bad: #b3261e;
+  font: 13px/1.4 system-ui, -apple-system, 'Segoe UI', sans-serif;
+  color: var(--text);
+  background: var(--bg);
+}
+
+* { box-sizing: border-box }
+body { margin: 0; height: 100vh; display: flex; flex-direction: column }
+button, select, input { font: inherit; color: inherit }
+button { background: var(--panel); border: 1px solid var(--line); border-radius: 6px; padding: 4px 10px; cursor: pointer }
+button:hover { border-color: var(--muted) }
+button.on { background: var(--accent); border-color: var(--accent); color: #fff }
+select, input[type=search], input[type=number], textarea { background: var(--panel); border: 1px solid var(--line); border-radius: 6px; padding: 4px 6px }
+
+header { display: flex; align-items: center; gap: 12px; padding: 8px 12px; background: var(--panel); border-bottom: 1px solid var(--line) }
+header .spacer { flex: 1 }
+header label { display: flex; align-items: center; gap: 6px; color: var(--muted) }
+#count { color: var(--muted) }
+
+main { flex: 1; display: grid; grid-template-columns: 280px 1fr 380px; min-height: 0 }
+aside { background: var(--panel); overflow-y: auto }
+#filters { border-right: 1px solid var(--line); padding: 10px; display: flex; flex-direction: column; gap: 10px }
+#filters input[type=search], #hood { width: 100%; margin-bottom: 4px }
+#side { border-left: 1px solid var(--line); display: flex; flex-direction: column }
+
+fieldset { border: 0; margin: 0; padding: 0 }
+legend { font-weight: 600; margin-bottom: 4px; padding: 0 }
+.chips { display: flex; flex-wrap: wrap; gap: 4px }
+.chips button { padding: 2px 8px; border-radius: 999px }
+.range { display: grid; grid-template-columns: 1fr 1fr; gap: 6px }
+.range input { width: 100% }
+.quick { display: flex; gap: 4px; margin-top: 6px }
+.quick button { flex: 1; padding: 2px 4px }
+.segmented { display: inline-flex }
+.segmented button { border-radius: 0; margin-left: -1px }
+.segmented button:first-child { border-radius: 6px 0 0 6px; margin-left: 0 }
+.segmented button:last-child { border-radius: 0 6px 6px 0 }
+.min { display: flex }
+.min button { flex: 1 }
+.check { display: flex; align-items: center; gap: 6px; cursor: pointer }
+
+#map { position: relative }
+#legend { position: absolute; left: 10px; bottom: 28px; z-index: 1; background: var(--panel); border: 1px solid var(--line); border-radius: 6px; padding: 6px 8px; font-size: 12px }
+#legend .row { display: flex; align-items: center; gap: 6px }
+#legend i { width: 12px; height: 12px; border-radius: 50% }
+#hint { position: absolute; top: 10px; left: 50%; transform: translateX(-50%); z-index: 1; background: var(--text); color: #fff; padding: 6px 10px; border-radius: 6px }
+#map.drawing canvas { cursor: crosshair }
+
+.toolbar { padding: 8px 10px; border-bottom: 1px solid var(--line); position: sticky; top: 0; background: var(--panel) }
+#list { list-style: none; margin: 0; padding: 0 }
+#list li { padding: 8px 10px; border-bottom: 1px solid var(--line); cursor: pointer; display: grid; grid-template-columns: 1fr auto; gap: 2px 8px }
+#list li:hover, #list li.hover { background: #eef2fb }
+#list .title { font-weight: 600 }
+#list .price { font-weight: 600; text-align: right }
+#list .meta { color: var(--muted) }
+#list .gap { text-align: right }
+#more { margin: 10px }
+.good { color: var(--good) }
+.bad { color: var(--bad) }
+.star { color: #c99a06 }
+
+#detail { padding: 12px; display: flex; flex-direction: column; gap: 10px }
+#detail h2 { margin: 0; font-size: 16px }
+#detail .back { align-self: flex-start }
+#detail dl { display: grid; grid-template-columns: auto 1fr; gap: 4px 12px; margin: 0 }
+#detail dt { color: var(--muted) }
+#detail dd { margin: 0 }
+#detail .big { font-size: 20px; font-weight: 700 }
+#detail textarea { width: 100%; min-height: 80px; resize: vertical }
+#detail svg { width: 100%; height: 80px }
+#detail .offer { border-top: 1px solid var(--line); padding-top: 10px }
+.estimate { display: grid; grid-template-columns: 1fr 1fr; gap: 8px }
+.estimate label { display: flex; flex-direction: column; gap: 2px; color: var(--muted) }
+.estimate button { grid-column: span 2 }
+#detail small { color: var(--muted) }

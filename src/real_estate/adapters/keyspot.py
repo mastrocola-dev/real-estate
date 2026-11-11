@@ -61,7 +61,8 @@ def parse_search(html: str, url: str) -> tuple[int | None, list[Listing]]:
     return total(tree), list(listings.values())
 
 
-def collect(client: Client, base_url: str, city: str, state: str, neighborhood: str) -> Iterator[Page]:
+def collect(client: Client, base_url: str, city: str, state: str, neighborhood: str | None) -> Iterator[Page]:
     for purpose in ('venda', 'alugar'):
-        url = urljoin(base_url, f'/{purpose}/{slug(state)}/{slug(city)}/{slug(neighborhood)}')
+        place = '/'.join(slug(p) for p in (state, city, neighborhood) if p)
+        url = urljoin(base_url, f'/{purpose}/{place}')
         yield from paginate(client, url, lambda u, n: f'{u}?pagina={n}', parse_search)
